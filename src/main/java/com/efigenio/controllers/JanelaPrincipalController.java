@@ -1,41 +1,47 @@
 package com.efigenio.controllers;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.efigenio.models.Pessoa;
+import com.efigenio.App;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 
 public class JanelaPrincipalController {
-    public void initialize() {
 
-        String path = "/home/luiz/IdeaProjects/texto/src/main/java/com/efigenio/arquivo_de_texto.txt"; // getClass().getResource("../arquivo_de_texto.txt").toString();
-        try (FileWriter writer = new FileWriter(path, true)) {
-            writer.write("Olá, mundo!\n");
-            writer.write("Escrevendo no arquivo.\n");
-            System.out.println("Dados escritos com sucesso!");
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("Ocorreu um erro: " + e.getMessage());
-        } catch (Exception e) {
-        }
+    @FXML private ListView<String> alunosListView;
 
-        try {
-            String caminho = "/home/luiz/IdeaProjects/texto/src/main/java/com/efigenio/arquivo_de_texto.txt"; // getClass().getResource("../arquivo_de_texto.txt").toString();
-            FileReader file = new FileReader(caminho);
-            BufferedReader reader = new BufferedReader(file);
+    @FXML
+    private Button cadastrar;
 
-            while (reader.ready()) {
-                String nome = reader.readLine().split(",")[0];
-
-                Pessoa pessoa = new Pessoa();
-                pessoa.setNome(nome);
-
-                System.out.println(pessoa.getNome());
-            }
-        } catch (Exception e) {
-            System.out.println("Ocorreu um Erro: " + e.getMessage());
-        }
+    @FXML
+    private void initialize() {
+        carregarAlunos();
     }
+    private void carregarAlunos() {
+        List<String> alunos = new ArrayList<>();
+        
+        try (BufferedReader br = new BufferedReader(new FileReader("src/main/java/com/efigenio/arquivo_de_texto.txt"))) {
+            String linha;
+            while ((linha = br.readLine()) != null) {
+                alunos.add(linha);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        alunosListView.getItems().addAll(alunos);
+    }
+
+    @FXML
+    private void alterarParaCadastro() throws IOException {
+        App.setRoot("JanelaCadastro");
+    }
+
+    
+
 }
+
